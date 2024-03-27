@@ -224,3 +224,4 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+super_key = "hf12345678"

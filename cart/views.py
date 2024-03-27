@@ -17,10 +17,10 @@ class CartApi(APIView):
     request_body=openapi.Schema(
         type=openapi.TYPE_OBJECT,
         properties={
-            'book': openapi.Schema(type=openapi.TYPE_INTEGER),
+            'book_id': openapi.Schema(type=openapi.TYPE_INTEGER),
             'quantity': openapi.Schema(type=openapi.TYPE_INTEGER),
         },
-        required=['book','quantity']
+        required=['book_id','quantity']
     ),
     responses={
         201: openapi.Response(

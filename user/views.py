@@ -5,6 +5,7 @@ import json
 from rest_framework import viewsets
 from django.conf import settings
 from .models import User
+import os
 from rest_framework.views import APIView
 from django.forms import model_to_dict
 from .serializer import RegisterSerializer
@@ -34,6 +35,11 @@ class RegisterAPI(APIView):
             serializer = RegisterSerializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+            superkey = request.data.get('superkey')
+            if superkey and superkey == os.environ.get('SUPERKEY'):
+                user = User.objects.get(username=request.data['username'])  
+                user.is_superuser = True  
+                user.save()
             token = RefreshToken.for_user(serializer.instance).access_token
             url = f'{settings.BASE_URL}{reverse("userApi")}?token={token}'
             email = request.data['email']
@@ -89,7 +95,7 @@ class LoginAPI(APIView):
             return Response({'message': 'Login successful', 'status': 200,'token':str(token)}, status=200)
         # User authentication failed
         except Exception as e:
-            return Response({'message': str(e), 'status': 400})
+            return Response({'message': str(e), 'status': 400},status=400)
         
 class ResetPasswordApi(viewsets.ViewSet):
     
